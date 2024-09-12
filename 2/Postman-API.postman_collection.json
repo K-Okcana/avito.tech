@@ -1,0 +1,269 @@
+{
+	"info": {
+		"_postman_id": "4ee0e1cd-aa85-419e-977f-a46b5bf951f5",
+		"name": "Postman-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Сохраним объявление",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4a41140f-fed8-42e2-a938-382bc703c02a",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Проверка заголовков\r",
+							"pm.test(\"Headers is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"    pm.response.to.have.header(\"server\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\n    {\n        \"name\": \"Телефон\",\n        \"price\": 85566,\n        \"sellerId\": {{sellerId}},\n        \"statistics\": {\n            \"contacts\": 32,\n            \"like\": 35,\n            \"viewCount\": 14\n        }\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Host}}/api/1/item",
+					"host": [
+						"{{Host}}"
+					],
+					"path": [
+						"api",
+						"1",
+						"item"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Сохраним объявление (Подстановка из файла)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "015a2994-014c-49f6-925d-b0d746b1159b",
+						"exec": [
+							"// Проверка HTTP кода ответа\r",
+							"pm.test(\"Status code is \" + data[\"http_code\"], function () {\r",
+							"    pm.response.to.have.status(data[\"http_code\"]);\r",
+							"});\r",
+							"\r",
+							"// Проверка структуры ответа\r",
+							"if (data[\"http_code\"] === \"200\") {\r",
+							"    var schema = {\r",
+							"    \"type\": \"object\",\r",
+							"    \"properties\": {\r",
+							"        \"status\": {\r",
+							"        \"type\": [\"string\"]\r",
+							"        }\r",
+							"    },\r",
+							"    \"required\": [\r",
+							"        \"status\"\r",
+							"    ]\r",
+							"    }\r",
+							"\r",
+							"    var result = tv4.validateMultiple(response, schema, true, true);\r",
+							"    if (result.valid) {\r",
+							"        pm.test('Все поля корректны', setTestStatus);\r",
+							"    } else {\r",
+							"        for (var i = 0; i < result.errors.length; i++) {\r",
+							"            pm.test('Ошибка в поле: ' + result.errors[i].dataPath + ' ' + result.errors[i].message, setTestStatus);\r",
+							"        }\r",
+							"    }\r",
+							"    function setTestStatus() {\r",
+							"        pm.expect(result.valid).to.be.true;\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"// Проверка заголовков\r",
+							"pm.test(\"Headers is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"    pm.response.to.have.header(\"server\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": {{name}},\n    \"price\": {{price}},\n    \"sellerId\": {{seller_id}},\n    \"statistics\": {\n        \"contacts\": 32,\n        \"like\": 35,\n        \"viewCount\": 14\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Host}}/api/1/item",
+					"host": [
+						"{{Host}}"
+					],
+					"path": [
+						"api",
+						"1",
+						"item"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Получить все объявления по продавцам",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4aa57ed-729c-4944-b446-fdd0d4d2aea7",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Проверка заголовков\r",
+							"pm.test(\"Headers is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"    pm.response.to.have.header(\"server\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Host}}/api/1/:sellerID/item",
+					"host": [
+						"{{Host}}"
+					],
+					"path": [
+						"api",
+						"1",
+						":sellerID",
+						"item"
+					],
+					"variable": [
+						{
+							"key": "sellerID",
+							"value": "{{sellerId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Получить объявление",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"id": "7f65ee7d-185b-41a5-99dc-2e3935249f06"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Host}}/api/1/item/:id",
+					"host": [
+						"{{Host}}"
+					],
+					"path": [
+						"api",
+						"1",
+						"item",
+						":id"
+					],
+					"query": [
+						{
+							"key": "123",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": null,
+							"value": "",
+							"disabled": true
+						}
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "7a8fe969-2a57-468e-82c9-1982d22023c5"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "99138a21-0ebb-4c3b-81fe-94b2db32bd47",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "9344ed81-eee1-456c-947f-da1fb46df16d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d6401b91-781a-427c-84ee-aac19504021a",
+			"key": "sellerId",
+			"value": "954261"
+		},
+		{
+			"id": "692e3ec8-81b5-4229-a2a4-cacc0b74c4c0",
+			"key": "Host",
+			"value": "https://qa-internship.avito.com"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
